@@ -27,6 +27,7 @@ class Note(Base):
     parent_id = Column(String, ForeignKey("notes.id"), nullable=True)
     forked_from_id = Column(String, ForeignKey("notes.id"), nullable=True)
     share_slug = Column(String, unique=True, index=True, nullable=True)
+    content = Column(String, nullable=True) # Full TipTap JSON/HTML for MVP simplify
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

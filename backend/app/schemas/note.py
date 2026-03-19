@@ -32,11 +32,13 @@ class NoteCreate(NoteBase):
 class NoteUpdate(NoteBase):
     title: Optional[str] = None
     is_public: Optional[bool] = None
+    content: Optional[str] = None # Added content update support
 
 class Note(NoteBase):
     id: uuid.UUID
     user_id: uuid.UUID
     share_slug: Optional[str] = None
+    content: Optional[str] = None # Added content field
     created_at: datetime
     updated_at: Optional[datetime] = None
     blocks: List[Block] = []
