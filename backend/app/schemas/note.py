@@ -19,7 +19,7 @@ class Block(BlockBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class NoteBase(BaseModel):
     title: str
@@ -43,4 +43,4 @@ class Note(NoteBase):
     forked_from_id: Optional[uuid.UUID] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
