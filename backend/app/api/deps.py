@@ -6,19 +6,9 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from ..core import security
 from ..core.config import settings
-from ..db import session # Wait, I didn't create db/session. It was core/database.
 from ..core.database import SessionLocal, get_db
-from ..models import user as user_model
-from ..schemas import user as user_schema
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
-
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
 
 def get_current_user(
     db: Session = Depends(get_db),
