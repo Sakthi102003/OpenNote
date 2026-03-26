@@ -11,7 +11,7 @@ import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
 import FloatingMenuExtension from '@tiptap/extension-floating-menu';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
-// import 'highlight.js/styles/atom-one-dark.css';
+import 'highlight.js/styles/atom-one-dark.css';
 
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { 
@@ -72,6 +72,17 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
       },
     },
   });
+
+  useEffect(() => {
+    if (editor && content !== null && content !== editor.getHTML()) {
+      // Only update if the content is significantly different to avoid cursor jumps
+      // A simple check is usually enough for initial load
+      // For more robust sync, use a diffing library or just trust the initial load
+      if (editor.getText() === '' && content !== '') {
+          editor.commands.setContent(content);
+      }
+    }
+  }, [content, editor]);
 
   const setLink = useCallback(() => {
     if (!editor) return;
