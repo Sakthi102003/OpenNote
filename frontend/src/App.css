@@ -1,0 +1,190 @@
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror-selectednode {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Code block styles */
+.ProseMirror pre {
+  background: #282c34; /* Atom One Dark background */
+  color: #abb2bf;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  margin: 1.5rem 0;
+}
+
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.9em;
+}
+
+.ProseMirror .hljs-comment,
+.ProseMirror .hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.ProseMirror .hljs-doctag,
+.ProseMirror .hljs-keyword,
+.ProseMirror .hljs-formula {
+  color: #c678dd;
+}
+
+.ProseMirror .hljs-section,
+.ProseMirror .hljs-name,
+.ProseMirror .hljs-selector-tag,
+.ProseMirror .hljs-deletion,
+.ProseMirror .hljs-subst {
+  color: #e06c75;
+}
+
+.ProseMirror .hljs-literal {
+  color: #56b6c2;
+}
+
+.ProseMirror .hljs-string,
+.ProseMirror .hljs-regexp,
+.ProseMirror .hljs-addition,
+.ProseMirror .hljs-attribute,
+.ProseMirror .hljs-meta .hljs-string {
+  color: #98c379;
+}
+
+.ProseMirror .hljs-attr,
+.ProseMirror .hljs-variable,
+.ProseMirror .hljs-template-variable,
+.ProseMirror .hljs-type,
+.ProseMirror .hljs-selector-class,
+.ProseMirror .hljs-selector-attr,
+.ProseMirror .hljs-selector-pseudo,
+.ProseMirror .hljs-number {
+  color: #d19a66;
+}
+
+.ProseMirror .hljs-symbol,
+.ProseMirror .hljs-bullet,
+.ProseMirror .hljs-link,
+.ProseMirror .hljs-meta,
+.ProseMirror .hljs-selector-id,
+.ProseMirror .hljs-title {
+  color: #61aeee;
+}
+
+.ProseMirror .hljs-built_in,
+.ProseMirror .hljs-title.class_,
+.ProseMirror .hljs-class .hljs-title {
+  color: #e6c07b;
+}
+
+.ProseMirror .hljs-emphasis {
+  font-style: italic;
+}
+
+.ProseMirror .hljs-strong {
+  font-weight: bold;
+}
+
+.ProseMirror .hljs-link {
+  text-decoration: underline;
+}
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 0;
+
+  .logo {
+    height: 18px;
+  }
+
+  a {
+    color: var(--text-h);
+    font-size: 16px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    display: flex;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+    .button-icon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - 8px);
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--border);
+  }
+  &::after {
+    right: 0;
+    border-right-color: var(--border);
+  }
+}
