@@ -35,13 +35,20 @@ export default function LoginPage() {
         return;
       }
       
+      // Create a temporary axios instance for this request without the automatic interceptor
+      // since the token isn't in the store yet
+      const tempAuth = { Authorization: `Bearer ${access_token}` };
+      
       // Fetch user details with the new token
       const userResponse = await api.get('/auth/me', {
-        headers: { Authorization: `Bearer ${access_token}` }
+        headers: tempAuth
       });
       
-      // Store authentication data
-      login(access_token, userResponse.data);
+      // Store authentication data - this will update the store
+      const userData = userResponse.data;
+      login(access_token, userData);
+      
+      // Navigate after storing auth data
       navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err);

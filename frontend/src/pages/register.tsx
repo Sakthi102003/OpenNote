@@ -134,12 +134,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Already have an account? Sign in
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
