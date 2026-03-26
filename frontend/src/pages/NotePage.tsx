@@ -131,34 +131,34 @@ export default function NotePage() {
   }, [debouncedTitle, debouncedContent, lastSavedTitle, lastSavedContent, note]);
 
   if (isLoading) {
-      return <div className="p-8 text-gray-400">Loading note...</div>;
+      return <div className="p-8 text-stone-400 font-medium">Loading note...</div>;
   }
 
   if (!note && !isLoading) {
-      return <div className="p-8 text-gray-400">Note not found. Select a note from the sidebar.</div>;
+      return <div className="p-8 text-stone-400 font-medium">Note not found. Select a note from the sidebar.</div>;
   }
 
   return (
-    <div className="flex flex-col h-full bg-white max-w-4xl mx-auto w-full relative">
-        <div className="pt-8 px-8 pb-4 flex justify-between items-center bg-white z-10 sticky top-0 border-b border-gray-200">
+    <div className="flex flex-col h-full bg-[#fcfbf9] max-w-4xl mx-auto w-full relative selection:bg-amber-200 font-sans">
+        <div className="pt-8 px-8 pb-4 flex justify-between items-center bg-[#fcfbf9] z-10 sticky top-0 border-b-2 border-stone-100">
             <input 
                 value={title} 
                 onChange={e => setTitle(e.target.value)} 
-                className="text-4xl font-bold outline-none placeholder:text-gray-300 flex-1 bg-transparent border-none focus:ring-0 p-0" 
+                className="text-4xl font-extrabold tracking-tight outline-none placeholder:text-stone-300 text-stone-900 flex-1 bg-transparent border-none focus:ring-0 p-0" 
                 placeholder="Untitled Note"
             />
             <div className="flex items-center gap-4">
-                <div className={`text-xs w-24 text-right transition-colors duration-300 ${saveStatus === 'Error' ? 'text-red-500' : 'text-gray-400'}`}>
+                <div className={`text-xs w-24 text-right font-medium transition-colors duration-300 ${saveStatus === 'Error' ? 'text-red-600' : 'text-stone-400'}`}>
                     {saveStatus}
                 </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => togglePublic.mutate()}
                         disabled={togglePublic.isPending}
-                        className={`p-2 rounded-md flex items-center gap-2 text-sm font-medium transition-colors ${
+                        className={`p-2 rounded-md flex items-center gap-2 text-sm font-bold transition-colors shadow-sm border ${
                             isPublic 
-                                ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' 
-                                : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-amber-300 text-amber-900 hover:bg-amber-400 border-amber-400' 
+                                : 'bg-white text-stone-600 hover:bg-stone-50 border-stone-200'
                         }`}
                         title={isPublic ? 'Make private' : 'Make public'}
                     >
@@ -169,11 +169,11 @@ export default function NotePage() {
                     {isPublic && shareSlug && (
                         <button
                             onClick={copyShareLink}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md bg-white text-stone-600 hover:bg-stone-50 border border-stone-200 shadow-sm transition-colors"
                             title="Copy share link"
                         >
                             {copied ? (
-                                <Check className="w-4 h-4 text-green-600" />
+                                <Check className="w-4 h-4 text-emerald-600" />
                             ) : (
                                 <Copy className="w-4 h-4" />
                             )}
@@ -184,7 +184,7 @@ export default function NotePage() {
                         <button
                             onClick={() => forkNote.mutate()}
                             disabled={forkNote.isPending}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md bg-white text-stone-600 hover:bg-stone-50 border border-stone-200 shadow-sm transition-colors"
                             title="Fork this note to your workspace"
                         >
                             <GitFork className="w-4 h-4" />
@@ -194,13 +194,15 @@ export default function NotePage() {
             </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto px-4 pb-20">
+        <div className="flex-1 overflow-y-auto px-4 pb-20 mt-4">
              {/* Key forces remount on note switch to clear editor internal state */}
-             <NoteEditor 
-                key={id} 
-                content={content} 
-                onChange={(newContent) => setContent(newContent)} 
-             />
+             <div className="prose prose-stone max-w-none px-4">
+               <NoteEditor 
+                  key={id} 
+                  content={content} 
+                  onChange={(newContent) => setContent(newContent)} 
+               />
+             </div>
         </div>
     </div>
   );
