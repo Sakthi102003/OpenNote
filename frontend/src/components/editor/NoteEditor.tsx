@@ -15,8 +15,8 @@ import 'highlight.js/styles/atom-one-dark.css';
 
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { 
-  Bold, Italic, Strikethrough, Code, Heading1, Heading2, Quote, Link as LinkIcon,  
-  Plus, Image as ImageIcon, Youtube as YoutubeIcon, CodeXml 
+  Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, Quote, Link as LinkIcon,  
+  Plus, Image as ImageIcon, Youtube as YoutubeIcon, CodeXml, List, ListTodo, X
 } from 'lucide-react';
 
 const lowlight = createLowlight(common);
@@ -27,10 +27,80 @@ interface NoteEditorProps {
   editable?: boolean;
 }
 
+interface SlashCommand {
+  name: string;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  action: (editor: any) => void;
+}
+
+const slashCommands: SlashCommand[] = [
+  {
+    name: 'h1',
+    label: 'Heading 1',
+    description: 'Large heading',
+    icon: <Heading1 size={18} />,
+    action: (editor) => editor.chain().focus().setHeading({ level: 1 }).run()
+  },
+  {
+    name: 'h2',
+    label: 'Heading 2',
+    description: 'Medium heading',
+    icon: <Heading2 size={18} />,
+    action: (editor) => editor.chain().focus().setHeading({ level: 2 }).run()
+  },
+  {
+    name: 'h3',
+    label: 'Heading 3',
+    description: 'Small heading',
+    icon: <Heading3 size={18} />,
+    action: (editor) => editor.chain().focus().setHeading({ level: 3 }).run()
+  },
+  {
+    name: 'bullet',
+    label: 'Bullet List',
+    description: 'Create a bullet list',
+    icon: <List size={18} />,
+    action: (editor) => editor.chain().focus().toggleBulletList().run()
+  },
+  {
+    name: 'numbered',
+    label: 'Numbered List',
+    description: 'Create a numbered list',
+    icon: <List size={18} />,
+    action: (editor) => editor.chain().focus().toggleOrderedList().run()
+  },
+  {
+    name: 'todo',
+    label: 'Todo List',
+    description: 'Create a todo list',
+    icon: <ListTodo size={18} />,
+    action: (editor) => editor.chain().focus().toggleTaskList().run()
+  },
+  {
+    name: 'quote',
+    label: 'Quote',
+    description: 'Create a quote block',
+    icon: <Quote size={18} />,
+    action: (editor) => editor.chain().focus().toggleBlockquote().run()
+  },
+  {
+    name: 'code',
+    label: 'Code Block',
+    description: 'Create a code block',
+    icon: <CodeXml size={18} />,
+    action: (editor) => editor.chain().focus().toggleCodeBlock().run()
+  },
+];
+
 
 const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showSlashCommands, setShowSlashCommands] = useState(false);
+  const [slashQuery, setSlashQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const commandMenuRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -70,6 +140,22 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[500px] px-4 py-8',
       },
+      handleKeyDown: (view, event) => {
+        // Handle slash commands
+        if (event.key === '/' && editable) {
+          const { from } = view.state.selection;
+          const $from = view.state.doc.resolve(from);
+          
+          // Check if we're at the start of a line
+          if ($from.parentOffset === 0 || view.state.doc.textBetween($from.start(), from).endsWith('\n')) {
+            event.preventDefault();
+            setShowSlashCommands(true);
+            setSlashQuery('');
+            return true;
+          }
+        }
+        return false;
+      }
     },
   });
 
@@ -131,6 +217,28 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
     if (url) {
       editor.chain().focus().setYoutubeVideo({ src: url }).run();
     }
+  }, [editor]);
+
+  const filteredCommands = slashCommands.filter(cmd =>
+    cmd.label.toLowerCase().includes(slashQuery.toLowerCase()) ||
+    cmd.name.includes(slashQuery.toLowerCase())
+  );
+
+  const executeCommand = useCallback((command: SlashCommand) => {
+    if (!editor) return;
+    
+    // Delete the "/" character
+    editor.chain()
+      .focus()
+      .command(({ commands }) => {
+        return commands.deleteRange({ from: editor.state.selection.from - 1, to: editor.state.selection.from });
+      })
+      .run();
+    
+    // Execute the command
+    command.action(editor);
+    setShowSlashCommands(false);
+    setSlashQuery('');
   }, [editor]);
 
   // Update content if it changes externally (e.g. loading)
@@ -280,6 +388,64 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
         accept="image/*" 
         style={{ display: 'none' }}
       />
+
+      {/* Slash Command Menu */}
+      {showSlashCommands && (
+        <div 
+          ref={commandMenuRef}
+          className="absolute bottom-4 left-4 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-y-auto w-64"
+        >
+          <div className="flex items-center justify-between pb-2 border-b border-gray-200 mb-2">
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search commands..."
+              value={slashQuery}
+              onChange={(e) => setSlashQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setShowSlashCommands(false);
+                  setSlashQuery('');
+                  editor?.chain().focus().run();
+                }
+              }}
+              className="flex-1 outline-none text-sm px-2"
+            />
+            <button
+              onClick={() => {
+                setShowSlashCommands(false);
+                setSlashQuery('');
+                editor?.chain().focus().run();
+              }}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {filteredCommands.length > 0 ? (
+            <div className="space-y-1">
+              {filteredCommands.map((cmd) => (
+                <button
+                  key={cmd.name}
+                  onClick={() => executeCommand(cmd)}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50 transition-colors text-left text-sm"
+                >
+                  <div className="text-indigo-600">{cmd.icon}</div>
+                  <div>
+                    <div className="font-medium text-gray-900">{cmd.label}</div>
+                    <div className="text-xs text-gray-500">{cmd.description}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-gray-500 text-sm">
+              No commands found
+            </div>
+          )}
+        </div>
+      )}
 
        <EditorContent editor={editor} />
     </div>
