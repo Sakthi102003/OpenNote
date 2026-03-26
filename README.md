@@ -1,76 +1,86 @@
-# OpenNotes
+# <p align="center"><img src="frontend/public/OpenNote.png" width="80" height="80" alt="OpenNotes Logo"><br>OpenNotes</p>
 
-A lightweight, Notion-inspired note-taking app focused on simplicity, fast note creation, and a unique public note reuse system.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+</p>
 
-## 🚀 Features
+---
 
-- **Rich Text Editor**: Powered by TipTap, supporting headings, lists, todos, code blocks, and more.
-- **Auto-save**: Never lose your work. Changes are saved automatically as you type.
-- **Fast Note Creation**: Create notes instantly.
-- **Public & Private Notes**: Keep notes private or share them publicly.
-- **Forkable Templates**: "Use This Note" feature allows duplicating public notes into your workspace.
+**OpenNotes** is a beautiful, lightweight, and modern note-taking application designed for ultimate speed and simplicity. Inspired by high-end stationery, it features a warm "Highlighter & Sticky Note" aesthetic that makes writing feel like true paper.
 
-## 🛠 Tech Stack
+---
 
-### Frontend
-- **Framework**: React + Vite (TypeScript)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **State Management**: Zustand
-- **Data Fetching**: TanStack Query (React Query)
-- **Editor**: TipTap with extensions
-- **Icons**: Lucide React
+## ✨ Key Features
 
-### Backend
-- **Framework**: FastAPI (Python)
-- **Database**: SQLite (Development) / PostgreSQL (Production ready with SQLAlchemy)
-- **Auth**: JWT-based authentication
-- **Validation**: Pydantic
+### 🖋️ Stationery Design System
+Experience a professional writing environment with our custom **Highlighter & Sticky Note** theme. Featuring:
+- **Unique Fonts**: Using *Caveat* for handwritten headers and *Outfit* for modern body text.
+- **Micro-animations**: Smooth transitions and hover effects that feel alive.
+- **Dark Mode**: A beautiful "Chalkboard" dark mode for nighttime writing.
 
-## 📦 Installation & Setup
+### 🔍 Powerful Search & Org
+- **Live Filter**: Search through dozens of notes instantly with real-time sidebar filtering.
+- **Auto-save**: Never hit save again. Every stroke is synced to the database automatically.
+- **Rich Editor**: Full Tiptap integration with slash commands (`/`), task lists, and code highlighting.
 
-### Prerequisites
-- Node.js (v18+)
-- Python (v3.9+)
+### 📤 Data Portability
+- **Markdown Export**: One-click download of any note as a `.md` file.
+- **Markdown Import**: Drag and drop your existing Obsidian or Github notes to recreate them instantly.
 
-### 1. Backend Setup
+### 🌐 Social Knowledge System
+- **Public Notes**: Share your brilliance with the world.
+- **One-Click Fork**: Found a great template? Click *Reuse* to duplicate it instantly to your workspace.
 
+---
+
+## 🚀 Quick Start
+
+### 🏁 Prerequisites
+- **Node.js** (v18+)
+- **Python** (v3.9+)
+
+### 🔌 1. Backend Setup
 ```bash
 cd backend
 python -m venv venv
+
 # Windows
 .\venv\Scripts\Activate
 # Mac/Linux
 source venv/bin/activate
 
 pip install -r requirements.txt
-pip install "pydantic[email]" pydantic-settings
-
-# Start the server (runs on http://localhost:8000)
 uvicorn app.main:app --reload
 ```
 
-### 2. Frontend Setup
-
+### 💻 2. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+Visit `http://localhost:5173` to start writing!
 
-Visit `http://localhost:5173` to start using the app.
+---
 
-## 📝 Usage
+## 🛠 Tech Stack
 
-1. **Register** a new account.
-2. **Login** to access your dashboard.
-3. Click **"+"** sidebar button to create a new note.
-4. Use **slash commands** (type `/`) in the editor to format text (e.g., `/h1`, `/todo`, `/code`).
-5. Notes are saved automatically.
+| Component | Technology |
+| :--- | :--- |
+| **Frontend** | React, Vite, TypeScript, Zustand, TanStack Query |
+| **Styling** | Tailwind CSS, Lucide Icons, Google Fonts |
+| **Text Engine** | TipTap Prosemirror |
+| **Backend** | FastAPI, Pydantic, SQLAlchemy |
+| **Database** | SQLite (Dev) / PostgreSQL (Prod) |
 
-## 🤝 Contributing
+---
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## 🤝 Contributing & License
 
-## 📄 License
+OpenNotes is open for contributions! Feel free to open a PR.
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://choosealicense.com/licenses/mit/) © 2026 OpenNotes.

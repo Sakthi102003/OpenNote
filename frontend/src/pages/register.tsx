@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useToast } from '../components/providers/ToastProvider';
 import api from '../lib/api';
 import { Loader, FileText } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export default function RegisterPage() {
   const location = useLocation();
@@ -65,15 +66,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-stone-50 px-4 py-12 sm:px-6 lg:px-8 font-sans selection:bg-amber-200">
+    <div className="flex min-h-screen items-center justify-center bg-stone-50 dark:bg-slate-900 px-4 py-12 sm:px-6 lg:px-8 font-sans selection:bg-amber-200 dark:selection:bg-slate-700 transition-colors">
+      <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md space-y-8">
         <div>
           <Link to="/" className="flex justify-center mb-6">
-            <div className="w-12 h-12 rounded bg-amber-400 flex items-center justify-center shadow-sm border border-amber-500 hover:bg-amber-500 transition-colors">
-              <FileText className="w-6 h-6 text-stone-900" />
+            <div className="w-12 h-12 rounded bg-amber-400 dark:bg-amber-500 flex items-center justify-center shadow-sm border border-amber-500 dark:border-amber-600 hover:bg-amber-500 dark:hover:bg-amber-400 transition-colors">
+              <FileText className="w-6 h-6 text-stone-900 dark:text-amber-950" />
             </div>
           </Link>
-          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-stone-900">Create your account</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-stone-900 dark:text-white">Create your account</h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="-space-y-px rounded-md shadow-sm">
@@ -85,7 +89,7 @@ export default function RegisterPage() {
                 type="text"
                 autoComplete="name"
                 required
-                className="relative block w-full rounded-t-md border-0 py-2.5 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 sm:text-sm sm:leading-6 pl-3 bg-white font-medium"
+                className="relative block w-full rounded-t-md border-0 py-2.5 text-stone-900 dark:text-white ring-1 ring-inset ring-stone-300 dark:ring-slate-700 placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 dark:focus:ring-amber-400 sm:text-sm sm:leading-6 pl-3 bg-white dark:bg-slate-800 font-medium transition-colors"
                 placeholder="Full Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -100,7 +104,7 @@ export default function RegisterPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="relative block w-full border-0 py-2.5 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 sm:text-sm sm:leading-6 pl-3 bg-white font-medium"
+                className="relative block w-full border-0 py-2.5 text-stone-900 dark:text-white ring-1 ring-inset ring-stone-300 dark:ring-slate-700 placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 dark:focus:ring-amber-400 sm:text-sm sm:leading-6 pl-3 bg-white dark:bg-slate-800 font-medium transition-colors"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -115,7 +119,7 @@ export default function RegisterPage() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="relative block w-full rounded-b-md border-0 py-2.5 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 sm:text-sm sm:leading-6 pl-3 bg-white font-medium"
+                className="relative block w-full rounded-b-md border-0 py-2.5 text-stone-900 dark:text-white ring-1 ring-inset ring-stone-300 dark:ring-slate-700 placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-amber-500 dark:focus:ring-amber-400 sm:text-sm sm:leading-6 pl-3 bg-white dark:bg-slate-800 font-medium transition-colors"
                 placeholder="Password (min. 8 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -124,17 +128,17 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {error && <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md border border-red-100 font-semibold">{error}</div>}
+          {error && <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/30 p-3 rounded-md border border-red-100 dark:border-red-800 font-semibold">{error}</div>}
 
           <div>
             <button
               type="submit"
               disabled={isLoading || !email || !password || !name}
-              className="group relative flex w-full justify-center rounded-md bg-amber-400 px-3 py-2.5 text-sm font-bold text-stone-900 hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-amber-500 shadow-sm"
+              className="group relative flex w-full justify-center rounded-md bg-amber-400 dark:bg-amber-500 px-3 py-2.5 text-sm font-bold text-stone-900 dark:text-amber-950 hover:bg-amber-500 dark:hover:bg-amber-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-amber-500 dark:border-amber-600 shadow-sm"
             >
               {isLoading ? (
                 <>
-                  <Loader className="w-5 h-5 mr-2 animate-spin text-stone-900" />
+                  <Loader className="w-5 h-5 mr-2 animate-spin text-stone-900 dark:text-amber-950" />
                   Creating account...
                 </>
               ) : (
@@ -143,7 +147,7 @@ export default function RegisterPage() {
             </button>
           </div>
           <div className="text-center">
-            <Link to="/login" className="font-bold text-amber-600 hover:text-amber-700 transition-colors">
+            <Link to="/login" className="font-bold text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 transition-colors">
               Already have an account? Sign in
             </Link>
           </div>
