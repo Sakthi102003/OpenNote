@@ -8,7 +8,7 @@ A lightweight, Notion-inspired note-taking app focused on simplicity, fast note 
 - **Auto-save**: Never lose your work. Changes are saved automatically as you type.
 - **Fast Note Creation**: Create notes instantly.
 - **Public & Private Notes**: Keep notes private or share them publicly.
-- **Forkable Templates**: "Use This Note" feature allows duplicating public notes into your workspace (Coming Soon).
+- **Forkable Templates**: "Use This Note" feature allows duplicating public notes into your workspace.
 
 ## 🛠 Tech Stack
 

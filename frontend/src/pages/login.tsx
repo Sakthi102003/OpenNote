@@ -2,36 +2,60 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../lib/api';
+import { Loader } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
     try {
-      const formData = new FormData();
-      formData.append('username', email);
-      formData.append('password', password);
+      // Use URLSearchParams for proper form-urlencoded data
+      const params = new URLSearchParams();
+      params.append('username', email);
+      params.append('password', password);
       
-      const response = await api.post('/auth/login', formData, {
+      const response = await api.post('/auth/login', params, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
       
       const { access_token } = response.data;
       
-      // Fetch user details
+      if (!access_token) {
+        setError('No token received from server');
+        setIsLoading(false);
+        return;
+      }
+      
+      // Fetch user details with the new token
       const userResponse = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${access_token}` }
       });
       
+      // Store authentication data
       login(access_token, userResponse.data);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed');
+      console.error('Login error:', err);
+      if (err.response?.status === 401) {
+        setError('Invalid email or password');
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.message === 'Network Error') {
+        setError('Unable to connect to server. Please check if the backend is running.');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,9 +102,17 @@ export default function LoginPage() {
           <div>
             <button
               type="submit"
-              className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={isLoading || !email || !password}
+              className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              Sign in
+              {isLoading ? (
+                <>
+                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
             </button>
           </div>
           <div className="text-center">

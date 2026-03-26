@@ -1,21 +1,53 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import api from '../lib/api';
+import { Loader } from 'lucide-react';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.email || '');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
+    if (!name.trim()) {
+      setError('Please enter your name');
+      return;
+    }
+    
+    if (!email.trim()) {
+      setError('Please enter your email');
+      return;
+    }
+    
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+    
+    setIsLoading(true);
     try {
       await api.post('/auth/register', { email, password, name });
-      navigate('/login');
+      navigate('/login', { state: { email } });
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed');
+      console.error('Registration error:', err);
+      if (err.response?.status === 400) {
+        setError('Email already registered. Please login instead.');
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.message === 'Network Error') {
+        setError('Unable to connect to server. Please check if the backend is running.');
+      } else {
+        setError('Registration failed. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -28,7 +60,7 @@ export default function RegisterPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <label htmlFor="name" className="sr-only">Name</label>
+              <label htmlFor="name" className="sr-only">Full Name</label>
               <input
                 id="name"
                 name="name"
@@ -39,6 +71,7 @@ export default function RegisterPage() {
                 placeholder="Full Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -53,6 +86,7 @@ export default function RegisterPage() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -64,24 +98,42 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 required
                 className="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-2"
-                placeholder="Password"
+                placeholder="Password (min. 8 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
           </div>
 
-          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+          {error && <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-md">{error}</div>}
 
           <div>
             <button
               type="submit"
-              className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={isLoading || !email || !password || !name}
+              className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              Sign up
+              {isLoading ? (
+                <>
+                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                'Sign up'
+              )}
             </button>
           </div>
           <div className="text-center">
+            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Already have an account? Sign in
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
             <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
               Already have an account? Sign in
             </Link>

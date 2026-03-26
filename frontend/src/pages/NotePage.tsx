@@ -4,7 +4,7 @@ import NoteEditor from '../components/editor/NoteEditor';
 import api from '../lib/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useDebounce } from '../hooks/useDebounce';
-import { Globe, Copy, Check, Share2, GitFork } from 'lucide-react';
+import { Globe, Copy, Check, GitFork } from 'lucide-react';
 
 interface NoteData {
     id: string;
