@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { useToast } from '../components/providers/ToastProvider';
 import api from '../lib/api';
 import { Loader } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
+  const { addToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +32,9 @@ export default function LoginPage() {
       const { access_token } = response.data;
       
       if (!access_token) {
-        setError('No token received from server');
+        const msg = 'No token received from server';
+        setError(msg);
+        addToast(msg, 'error');
         setIsLoading(false);
         return;
       }
@@ -48,19 +52,23 @@ export default function LoginPage() {
       const userData = userResponse.data;
       login(access_token, userData);
       
-      // Navigate after storing auth data
+      // Show success toast and navigate after storing auth data
+      addToast(`Welcome back, ${userData.email}!`, 'success');
       navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err);
+      let errorMsg = 'Login failed. Please try again.';
+      
       if (err.response?.status === 401) {
-        setError('Invalid email or password');
+        errorMsg = 'Invalid email or password';
       } else if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
+        errorMsg = err.response.data.detail;
       } else if (err.message === 'Network Error') {
-        setError('Unable to connect to server. Please check if the backend is running.');
-      } else {
-        setError('Login failed. Please try again.');
+        errorMsg = 'Unable to connect to server. Please check if the backend is running.';
       }
+      
+      setError(errorMsg);
+      addToast(errorMsg, 'error');
     } finally {
       setIsLoading(false);
     }

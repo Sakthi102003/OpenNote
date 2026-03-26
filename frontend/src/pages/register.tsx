@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useToast } from '../components/providers/ToastProvider';
 import api from '../lib/api';
 import { Loader } from 'lucide-react';
 
@@ -11,41 +12,53 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
+    // Validation with toast feedback
     if (!name.trim()) {
-      setError('Please enter your name');
+      const msg = 'Please enter your name';
+      setError(msg);
+      addToast(msg, 'error');
       return;
     }
     
     if (!email.trim()) {
-      setError('Please enter your email');
+      const msg = 'Please enter your email';
+      setError(msg);
+      addToast(msg, 'error');
       return;
     }
     
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      const msg = 'Password must be at least 8 characters long';
+      setError(msg);
+      addToast(msg, 'error');
       return;
     }
     
     setIsLoading(true);
     try {
       await api.post('/auth/register', { email, password, name });
+      addToast('Account created successfully! Please log in.', 'success');
       navigate('/login', { state: { email } });
     } catch (err: any) {
       console.error('Registration error:', err);
+      let errorMsg = 'Registration failed. Please try again.';
+      
       if (err.response?.status === 400) {
-        setError('Email already registered. Please login instead.');
+        errorMsg = 'Email already registered. Please login instead.';
       } else if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
+        errorMsg = err.response.data.detail;
       } else if (err.message === 'Network Error') {
-        setError('Unable to connect to server. Please check if the backend is running.');
-      } else {
-        setError('Registration failed. Please try again.');
+        errorMsg = 'Unable to connect to server. Please check if the backend is running.';
       }
+      
+      setError(errorMsg);
+      addToast(errorMsg, 'error');
     } finally {
       setIsLoading(false);
     }

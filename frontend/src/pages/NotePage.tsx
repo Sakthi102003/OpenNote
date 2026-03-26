@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import NoteEditor from '../components/editor/NoteEditor';
+import { useToast } from '../components/providers/ToastProvider';
 import api from '../lib/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useDebounce } from '../hooks/useDebounce';
@@ -17,6 +18,7 @@ interface NoteData {
 
 export default function NotePage() {
   const { id } = useParams<{ id: string }>();
+  const { addToast } = useToast();
   // Local state for immediate UI feedback
   const [content, setContent] = useState<string>('');
   const [title, setTitle] = useState<string>('');
@@ -62,9 +64,11 @@ export default function NotePage() {
         setSaveStatus('Saved');
         setLastSavedTitle(vars.title);
         setLastSavedContent(vars.content);
+        addToast('Note saved successfully', 'success');
     },
     onError: () => {
         setSaveStatus('Error');
+        addToast('Failed to save note', 'error');
     }
   });
 
@@ -77,6 +81,10 @@ export default function NotePage() {
     onSuccess: (data) => {
         setIsPublic(data.is_public);
         setShareSlug(data.share_slug);
+        addToast(data.is_public ? 'Note is now public' : 'Note is now private', 'success');
+    },
+    onError: () => {
+        addToast('Failed to update sharing status', 'error');
     }
   });
 
@@ -87,10 +95,10 @@ export default function NotePage() {
       return data;
     },
     onSuccess: () => {
-        alert('Note forked successfully!');
+        addToast('Note forked successfully to your workspace!', 'success');
     },
     onError: () => {
-        alert('Failed to fork note');
+        addToast('Failed to fork note', 'error');
     }
   });
 
@@ -99,6 +107,7 @@ export default function NotePage() {
       const link = `${window.location.origin}/public/${shareSlug}`;
       navigator.clipboard.writeText(link);
       setCopied(true);
+      addToast('Share link copied to clipboard!', 'success');
       setTimeout(() => setCopied(false), 2000);
     }
   };

@@ -9,6 +9,8 @@ import PublicNotePage from './pages/PublicNotePage';
 import DashboardPage from './pages/dashboard';
 import Layout from './components/layout/Layout';
 import { useAuthStore } from './store/useAuthStore';
+import { ToastProvider } from './components/providers/ToastProvider';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Protected Route Component
 const ProtectedRoute = () => {
@@ -23,20 +25,24 @@ const ProtectedRoute = () => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/public/:slug" element={<PublicNotePage />} />
-        
-        {/* Protected Dashboard Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/notes/:id" element={<NotePage />} />
-        </Route>
-      </Routes>
-    </Router>
+    <ErrorBoundary>
+      <ToastProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/public/:slug" element={<PublicNotePage />} />
+            
+            {/* Protected Dashboard Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/notes/:id" element={<NotePage />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }
 

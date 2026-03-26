@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '../components/providers/ToastProvider';
 import api from '../lib/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { GitFork, ArrowLeft } from 'lucide-react';
@@ -16,6 +17,7 @@ export default function PublicNotePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const token = useAuthStore(state => state.token);
+  const { addToast } = useToast();
 
   // Fetch public note
   const { data: note, isLoading } = useQuery({
@@ -34,13 +36,13 @@ export default function PublicNotePage() {
       return data;
     },
     onSuccess: (data) => {
-        alert('Note forked successfully!');
+        addToast('Note forked successfully!', 'success');
         if (token) {
             navigate(`/notes/${data.id}`);
         }
     },
     onError: () => {
-        alert('Failed to fork note');
+        addToast('Failed to fork note', 'error');
     }
   });
 

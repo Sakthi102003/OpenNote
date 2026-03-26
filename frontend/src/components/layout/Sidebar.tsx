@@ -1,23 +1,25 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNotes } from '../../hooks/useNotes';
-import { Plus, Home, FileText, Trash2, LogOut, AlertCircle } from 'lucide-react';
+import { useToast } from '../providers/ToastProvider';
+import { Plus, Home, FileText, Trash2, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { useState } from 'react';
 
 export default function Sidebar() {
   const { user, logout } = useAuthStore();
-  const { notes, isLoading, error, createNote, deleteNote } = useNotes();
-  const [showError, setShowError] = useState(true);
+  const { notes, isLoading, createNote, deleteNote } = useNotes();
   const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const handleCreateNote = async () => {
     createNote.mutate('Untitled Note', {
       onSuccess: (newNote) => {
+        addToast('Note created successfully', 'success');
         navigate(`/notes/${newNote.id}`);
       },
-      onError: () => {
-        setShowError(true);
+      onError: (error: any) => {
+        const errorMsg = error?.response?.data?.detail || 'Failed to create note';
+        addToast(errorMsg, 'error');
       }
     });
   };
@@ -27,8 +29,12 @@ export default function Sidebar() {
     e.stopPropagation();
     if (confirm('Are you sure you want to delete this note?')) {
         deleteNote.mutate(id, {
-          onError: () => {
-            setShowError(true);
+          onSuccess: () => {
+            addToast('Note deleted successfully', 'success');
+          },
+          onError: (error: any) => {
+            const errorMsg = error?.response?.data?.detail || 'Failed to delete note';
+            addToast(errorMsg, 'error');
           }
         });
         if (window.location.pathname.includes(id)) {
@@ -45,21 +51,6 @@ export default function Sidebar() {
         </div>
         <span className="font-medium truncate text-sm">{user?.name || user?.email}</span>
       </div>
-
-      {error && showError && (
-        <div className="mx-2 mt-2 p-3 bg-red-50 border border-red-200 rounded-md flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-xs text-red-700">{typeof error === 'string' ? error : 'An error occurred'}</p>
-            <button
-              onClick={() => setShowError(false)}
-              className="text-xs text-red-600 hover:text-red-700 mt-1 underline"
-            >
-              Dismiss
-            </button>
-          </div>
-        </div>
-      )}
 
       <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
         <NavLink 
