@@ -139,7 +139,7 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[500px] px-4 py-8',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl prose-stone dark:prose-invert mx-auto focus:outline-none min-h-[500px] px-4 py-8',
       },
       handleKeyDown: (view, event) => {
         // Handle slash commands
@@ -272,7 +272,7 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
             return !selection.empty;
           }}
         >
-          <div className="flex items-center gap-1 p-1 bg-white border rounded shadow-lg">
+          <div className="flex items-center gap-1 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded shadow-lg">
             <button
               onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
               className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200 text-black' : 'text-gray-500'}`}
@@ -337,16 +337,16 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
 
       {editor && (
         <FloatingMenu editor={editor} className="flex items-center gap-1">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center -ml-8">
             <button
-              className="p-1 text-gray-400 bg-transparent rounded-full hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="p-1 text-gray-400 bg-transparent rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Plus size={20} className={`transform transition-transform ${isMenuOpen ? 'rotate-45' : ''}`} />
             </button>
 
             {isMenuOpen && (
-              <div className="absolute left-8 flex items-center gap-1 p-1 bg-white border rounded shadow-lg animate-in fade-in slide-in-from-left-2 duration-200">
+              <div className="absolute left-8 flex items-center gap-1 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded shadow-lg animate-in fade-in slide-in-from-left-2 duration-200">
                 <button
                   onClick={() => {
                     addImage();
@@ -393,11 +393,11 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
 
       {/* Slash Command Menu */}
       {showSlashCommands && (
-        <div 
+        <div
           ref={commandMenuRef}
-          className="absolute bottom-4 left-4 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-y-auto w-64"
+          className="absolute bottom-4 left-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-y-auto w-64"
         >
-          <div className="flex items-center justify-between pb-2 border-b border-gray-200 mb-2">
+          <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-slate-700 mb-2">
             <input
               autoFocus
               type="text"
@@ -411,7 +411,7 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
                   editor?.chain().focus().run();
                 }
               }}
-              className="flex-1 outline-none text-sm px-2"
+              className="flex-1 outline-none text-sm px-2 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             />
             <button
               onClick={() => {
@@ -419,7 +419,7 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
                 setSlashQuery('');
                 editor?.chain().focus().run();
               }}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
             >
               <X size={18} />
             </button>
@@ -431,18 +431,18 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
                 <button
                   key={cmd.name}
                   onClick={() => executeCommand(cmd)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50 transition-colors text-left text-sm"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-left text-sm"
                 >
-                  <div className="text-indigo-600">{cmd.icon}</div>
+                  <div className="text-gray-600 dark:text-gray-300">{cmd.icon}</div>
                   <div>
-                    <div className="font-medium text-gray-900">{cmd.label}</div>
-                    <div className="text-xs text-gray-500">{cmd.description}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{cmd.label}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{cmd.description}</div>
                   </div>
                 </button>
               ))}
             </div>
           ) : (
-            <div className="text-center py-4 text-gray-500 text-sm">
+            <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
               No commands found
             </div>
           )}
