@@ -51,7 +51,7 @@ export default function NotePage() {
         setIsPublic(note.is_public || false);
         setShareSlug(note.share_slug || null);
     }
-  }, [note?.id, note?.title, note?.content, note?.is_public, note?.share_slug]);
+  }, [note]);
 
   // Mutation for saving
   const updateNote = useMutation({
@@ -165,12 +165,12 @@ export default function NotePage() {
       const hasContentChanged = debouncedContent !== lastSavedContent;
 
       if (hasTitleChanged || hasContentChanged) {
-          updateNote.mutate({ 
-            title: debouncedTitle, 
-            content: debouncedContent 
+          updateNote.mutate({
+            title: debouncedTitle,
+            content: debouncedContent
           });
       }
-  }, [debouncedTitle, debouncedContent, lastSavedTitle, lastSavedContent, note]);
+  }, [debouncedTitle, debouncedContent, lastSavedTitle, lastSavedContent, note, updateNote]);
 
   if (isLoading) {
       return <div className="p-8 text-stone-400 dark:text-slate-500 font-medium">Loading note...</div>;

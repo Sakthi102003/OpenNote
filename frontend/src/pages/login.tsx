@@ -56,6 +56,7 @@ export default function LoginPage() {
       // Show success toast and navigate after storing auth data
       addToast(`Welcome back, ${userData.email}!`, 'success');
       navigate('/dashboard');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Login error:', err);
       let errorMsg = 'Login failed. Please try again.';

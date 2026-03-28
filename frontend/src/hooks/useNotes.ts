@@ -21,6 +21,7 @@ export const useNotes = () => {
         const { data } = await api.get('/notes');
         setError(null);
         return data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         const errorMessage = err.response?.data?.detail || 'Failed to load notes';
         setError(errorMessage);
@@ -37,6 +38,7 @@ export const useNotes = () => {
         const { data } = await api.post('/notes', { title });
         setError(null);
         return data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         const errorMessage = err.response?.data?.detail || 'Failed to create note';
         setError(errorMessage);
@@ -46,6 +48,7 @@ export const useNotes = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       const errorMessage = err.response?.data?.detail || 'Failed to create note';
       setError(errorMessage);
@@ -57,6 +60,7 @@ export const useNotes = () => {
       try {
         await api.delete(`/notes/${id}`);
         setError(null);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         const errorMessage = err.response?.data?.detail || 'Failed to delete note';
         setError(errorMessage);
@@ -66,6 +70,7 @@ export const useNotes = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       const errorMessage = err.response?.data?.detail || 'Failed to delete note';
       setError(errorMessage);

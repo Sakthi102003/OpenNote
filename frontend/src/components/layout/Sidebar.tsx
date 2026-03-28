@@ -12,14 +12,22 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
 
   useEffect(() => {
-     setIsDarkMode(document.documentElement.classList.contains('dark'));
-  }, []);
+    if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const toggleDarkMode = () => {
-     document.documentElement.classList.toggle('dark');
      setIsDarkMode(!isDarkMode);
   };
 
@@ -33,6 +41,7 @@ export default function Sidebar() {
         addToast('Note created successfully', 'success');
         navigate(`/notes/${newNote.id}`);
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
         const errorMsg = error?.response?.data?.detail || 'Failed to create note';
         addToast(errorMsg, 'error');
@@ -48,6 +57,7 @@ export default function Sidebar() {
           onSuccess: () => {
             addToast('Note deleted successfully', 'success');
           },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
             const errorMsg = error?.response?.data?.detail || 'Failed to delete note';
             addToast(errorMsg, 'error');

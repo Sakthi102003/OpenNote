@@ -46,6 +46,7 @@ export default function RegisterPage() {
       await api.post('/auth/register', { email, password, name });
       addToast('Account created successfully! Please log in.', 'success');
       navigate('/login', { state: { email } });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Registration error:', err);
       let errorMsg = 'Registration failed. Please try again.';

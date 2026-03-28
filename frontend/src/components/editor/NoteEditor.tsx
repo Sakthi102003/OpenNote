@@ -32,6 +32,7 @@ interface SlashCommand {
   label: string;
   description: string;
   icon: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: (editor: any) => void;
 }
 
@@ -260,7 +261,8 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
           editor={editor} 
           shouldShow={({ editor }) => {
             const { selection } = editor.state;
-            // @ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error: selection.node might not have type on it in all typings
             if (selection.node && selection.node.type.name === 'image') {
               return false;
             }

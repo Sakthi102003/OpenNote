@@ -7,16 +7,20 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ className = '', showText = false }: ThemeToggleProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' || document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
 
   useEffect(() => {
-    // Check local storage or existing class
-    const isDark = localStorage.getItem('theme') === 'dark' || document.documentElement.classList.contains('dark');
-    setIsDarkMode(isDark);
-    if (isDark) {
+    if (isDarkMode) {
         document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
     }
-  }, []);
+  }, [isDarkMode]);
 
   const toggleDarkMode = (e: React.MouseEvent) => {
      e.preventDefault(); // In case it's inside a form or link
