@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/useAuthStore';
 
 // Assuming backend runs on localhost:8000
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+let isRedirectingToLogin = false;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -30,10 +31,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
+      // Token expired or invalid; avoid cascading redirects from parallel requests.
       const logout = useAuthStore.getState().logout;
       logout();
-      window.location.href = '/login';
+
+      if (!isRedirectingToLogin && window.location.pathname !== '/login') {
+        isRedirectingToLogin = true;
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

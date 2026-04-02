@@ -8,6 +8,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { Globe, Copy, Check, GitFork, Download, Upload } from 'lucide-react';
 import TurndownService from 'turndown';
 import { marked } from 'marked';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface NoteData {
     id: string;
@@ -21,6 +22,7 @@ interface NoteData {
 export default function NotePage() {
   const { id } = useParams<{ id: string }>();
   const { addToast } = useToast();
+  const token = useAuthStore((state) => state.token);
   // Local state for immediate UI feedback
   const [content, setContent] = useState<string>('');
   const [title, setTitle] = useState<string>('');
@@ -34,11 +36,12 @@ export default function NotePage() {
   // Fetch Note
   const { data: note, isLoading } = useQuery({
     queryKey: ['note', id],
+    enabled: !!id && !!token,
     queryFn: async () => {
       const { data } = await api.get<NoteData>(`/notes/${id}`);
       return data;
     },
-    enabled: !!id,
+    retry: false,
   });
 
   // Initial load effect - only runs when ID changes or first load

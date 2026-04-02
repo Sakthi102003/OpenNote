@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import api from '../lib/api';
+import { useAuthStore } from '../store/useAuthStore';
 
 export interface Note {
   id: string;
@@ -13,9 +14,11 @@ export interface Note {
 export const useNotes = () => {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+  const token = useAuthStore((state) => state.token);
 
   const { data: notes, isLoading, error: queryError } = useQuery<Note[]>({
     queryKey: ['notes'],
+    enabled: !!token,
     queryFn: async () => {
       try {
         const { data } = await api.get('/notes');
@@ -28,8 +31,7 @@ export const useNotes = () => {
         throw err;
       }
     },
-    retry: 2,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: false,
   });
 
   const createNote = useMutation({

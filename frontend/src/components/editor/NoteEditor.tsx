@@ -110,6 +110,7 @@ const NoteEditor = ({ content, onChange, editable = true }: NoteEditorProps) => 
           levels: [1, 2, 3],
         },
         codeBlock: false,
+        link: false,
       }),
       CodeBlockLowlight.configure({
         lowlight,
