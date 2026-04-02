@@ -74,7 +74,8 @@ export default function NotePage() {
     onError: () => {
         setSaveStatus('Error');
         addToast('Failed to save note', 'error');
-    }
+    },
+    retry: false,
   });
 
   // Mutation for toggling public status
@@ -173,7 +174,7 @@ export default function NotePage() {
             content: debouncedContent
           });
       }
-  }, [debouncedTitle, debouncedContent, lastSavedTitle, lastSavedContent, note, updateNote]);
+  }, [debouncedTitle, debouncedContent, lastSavedTitle, lastSavedContent, note]);
 
   if (isLoading) {
       return <div className="p-8 text-stone-400 dark:text-slate-500 font-medium">Loading note...</div>;
