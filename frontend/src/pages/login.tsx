@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToast } from '../components/providers/ToastProvider';
+import { GoogleLogin } from '@react-oauth/google';
 import api from '../lib/api';
 import { Loader, FileText } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -14,6 +15,31 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const { addToast } = useToast();
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      setIsLoading(true);
+      const response = await api.post('/auth/google', {
+        token: credentialResponse.credential,
+      });
+      
+      const { access_token } = response.data;
+      if (!access_token) throw new Error('No token received');
+      
+      const tempAuth = { Authorization: `Bearer ${access_token}` };
+      const userResponse = await api.get('/auth/me', { headers: tempAuth });
+      
+      login(access_token, userResponse.data);
+      addToast(`Welcome back, ${userResponse.data.email}!`, 'success');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      setError('Google login failed. Please try again.');
+      addToast('Google login failed', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,7 +166,28 @@ export default function LoginPage() {
               )}
             </button>
           </div>
-          <div className="text-center">
+          
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-stone-300 dark:border-slate-700"></div>
+            <span className="px-3 text-stone-500 dark:text-slate-400 text-sm">or continue with</span>
+            <div className="flex-grow border-t border-stone-300 dark:border-slate-700"></div>
+          </div>
+          <div className="flex justify-center w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setError('Google login failed');
+                addToast('Google login failed', 'error');
+              }}
+              useOneTap
+              theme="outline"
+              size="large"
+              shape="rectangular"
+              width="100%"
+            />
+          </div>
+
+          <div className="text-center mt-6">
             <Link to="/register" className="font-bold text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 transition-colors">
               Don't have an account? Sign up
             </Link>

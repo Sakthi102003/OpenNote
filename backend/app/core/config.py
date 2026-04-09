@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
+    GOOGLE_CLIENT_ID: str | None = os.getenv("GOOGLE_CLIENT_ID", None)
+    
+    # Use SQLite for simplicity by default, but ready for Postgres
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./sql_app.db")
+    
     BACKEND_CORS_ORIGINS: list[str] | str = ["http://localhost:5173", "http://localhost:3000"] # Allow Vite dev server
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
@@ -21,10 +26,8 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # Use SQLite for simplicity by default, but ready for Postgres
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./sql_app.db")
-
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 settings = Settings()

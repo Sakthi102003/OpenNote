@@ -13,6 +13,9 @@ class UserCreate(UserBase):
 class UserLogin(UserBase):
     password: str
 
+class GoogleToken(BaseModel):
+    token: str
+
 class User(UserBase):
     id: uuid.UUID
     name: Optional[str] = None
